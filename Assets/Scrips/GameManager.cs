@@ -1,10 +1,18 @@
+using System.Drawing;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
     private int playerScore;
+
+    [SerializeField]
+    private GameObject ballPosition;
+
+    [SerializeField]
+    private GameObject ballPrefab;
     public int PlayerScore {  get { return playerScore; }set { playerScore = value; } }
+
 
     public static GameManager instance;
 
@@ -24,5 +32,12 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+  private void SetBall(BallColor col,int i)
+    {
+        Instantiate(ballPrefab,
+            ballPosition[i].tranform.position,
+            Quaternion.identity);
     }
 }
