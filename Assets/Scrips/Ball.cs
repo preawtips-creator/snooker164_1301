@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -30,6 +31,7 @@ public class Ball : MonoBehaviour, IPointerClickHandler
     {
         Debug.Log(point);
         GameManager.instance.PlayerScore += point;
+        Destroy(gameObject);
     }
 
     void Awake()
