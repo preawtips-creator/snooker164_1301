@@ -5,6 +5,11 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField]
     private int playerScore;
+    public int PlayerScore 
+    { 
+        get { return playerScore; } 
+        set { playerScore = value; } 
+    }
 
     [SerializeField]
     private GameObject[] ballPosition;
@@ -18,14 +23,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private float xInput = 0f;
 
-    [SerializeField]
-    private GameObject cam;
-
-    public int PlayerScore { get { return playerScore; } set { playerScore = value; } }
+  
 
     public static GameManager instance;
 
-    private void Awake()
+   void Awake()
     {
         instance = this;
     }
@@ -41,63 +43,54 @@ public class GameManager : MonoBehaviour
         SetBall(BallColor.Pink, 5);
         SetBall(BallColor.Red, 6);
         SetBall(BallColor.Black, 7);
-        cameraBehindCueball();
     }
 
     // Update is called once per frame
     void Update()
     {
+        RotateBall();
+
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            shootBall();
-        }
+            ShootBall();
 
-        if (Keyboard.current.aKey.wasPressedThisFrame || Keyboard.current.leftArrowKey.isPressed)
-        {
-            xInput = -.1f;
-        }
-        else if (Keyboard.current.dKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.isPressed)
-        {
-            xInput = .1f;
-        }
+        if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
+            xInput = -0.1f;
+
+        else if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
+            xInput = 0.1f;
+
         else
-        {
             xInput = 0f;
-        }
-        rotateBall();
 
-        if (Keyboard.current.backspaceKey.wasPressedThisFrame)
-        {
-            stopBall();
-        }
     }
 
     private void SetBall(BallColor col, int i)
     {
-        GameObject newBall = Instantiate(ballPrefab,ballPosition[i].transform.position,Quaternion.identity);
+        GameObject obj = Instantiate(ballPrefab,
+                                      ballPosition[i].transform.position,
+                                      Quaternion.identity);
 
-        Ball ballScript = newBall.GetComponent<Ball>();
+        Ball ballScript = obj.GetComponent<Ball>();
         if (ballScript != null)
         {
             ballScript.SetColorAndPoint(col);
         }
     }
 
-    private void shootBall()
+    private void ShootBall()
     {
         Rigidbody rd = cueBall.GetComponent<Rigidbody>();
         rd.AddForce(Vector3.forward * 50, ForceMode.Impulse);
-        cam.transform.parent = null;
-        cam.transform.position = new Vector3(0f, 52f, 0f);
-        cam.transform.eulerAngles = new Vector3(90f, 0f, 0f);
+
     }
 
-    private void rotateBall()
+    private void RotateBall()
     {
-        if (cueBall != null) cueBall.transform.Rotate(new Vector3(0f, xInput, 0f));
+        if (cueBall != null) 
+            cueBall.transform.Rotate(new Vector3(0f, xInput, 0f));
     }
 
-    private void stopBall()
+    private void StopBall()
     {
         Rigidbody rd = cueBall.GetComponent<Rigidbody>();
         rd.linearVelocity = Vector3.zero;
@@ -105,10 +98,5 @@ public class GameManager : MonoBehaviour
         cueBall.transform.eulerAngles = new Vector3(0f, 0f, 0f);
     }
 
-    private void cameraBehindCueball()
-    {
-        cam.transform.parent = cueBall.transform;
-        cam.transform.position = cueBall.transform.position + new Vector3(0f, 7f, -15f);
-        cam.transform.eulerAngles = new Vector3(30f, 0f, 0f);
-    }
+
 }
